@@ -1,12 +1,12 @@
 {% extends 'todo/base.html' %}
-{% block content %}
 
+{% block content %}
     {% for task in tasks %}
         <div class="task">
             <div class="date">
                 {{ task.published_date }}
             </div>
-            <h2><a href="{% url 'task_detail' pk=task.pk %}">{{ task.title }}</a></h2>
+            <h1><a href="{% url 'task_detail' pk=task.pk %}">{{ task.title }}</a></h1>
             <p>{{ task.text|linebreaksbr }}</p>
         </div>
     {% endfor %}
