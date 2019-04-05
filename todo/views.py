@@ -1,42 +1,42 @@
 from django.shortcuts import redirect
 from django.shortcuts import render
 from django.utils import timezone
-from .models import Post
+from .models import Task
 from django.shortcuts import render, get_object_or_404
-from .forms import PostForm
+from .forms import TaskForm
 
 # Create your views here.
-def post_list(request):
-    posts = Post.objects.filter(published_date__lte=timezone.now()).order_by('published_date')
-    return render(request, 'todo/post_list.html', {'posts': posts})
+def task_list(request):
+    tasks = Task.objects.filter(published_date__lte=timezone.now()).order_by('published_date')
+    return render(request, 'todo/task_list.html', {'tasks': tasks})
 
-def post_detail(request, pk):
-    post = get_object_or_404(Post, pk=pk)
-    return render(request, 'todo/post_detail.html', {'post' : post})
+def task_detail(request, pk):
+    task = get_object_or_404(Task, pk=pk)
+    return render(request, 'todo/task_detail.html', {'task' : task})
 
-def post_new(request):
-    if request.method == "POST":
-        form = PostForm(request.POST)
+def task_new(request):
+    if request.method == "TASK":
+        form = TaskForm(request.TASK)
         if form.is_valid():
-            post = form.save(commit=False)
-            post.author = request.user
-            post.published_date = timezone.now()
-            post.save()
-            return redirect('post_detail', pk=post.pk)
+            task = form.save(commit=False)
+            task.author = request.user
+            task.published_date = timezone.now()
+            task.save()
+            return redirect('task_detail', pk=task.pk)
     else:
-        form = PostForm()
-    return render(request, 'todo/post_edit.html', {'form':form})
+        form = TaskForm()
+    return render(request, 'todo/task_edit.html', {'form':form})
 
-def post_edit(request, pk):
-    post = get_object_or_404(Post, pk=pk)
-    if request.method == "POST":
-        form = PostForm(request.POST, instance=post)
+def task_edit(request, pk):
+    task = get_object_or_404(task, pk=pk)
+    if request.method == "TASK":
+        form = TaskForm(request.TASK, instance=Task)
         if form.is_valid():
-            post = form.save(commit=False)
-            post.author = request.user
-            post.published_date = timezone.now()
-            post.save()
-            return redirect('post_detail', pk=post.pk)
+            task = form.save(commit=False)
+            task.author = request.user
+            task.published_date = timezone.now()
+            task.save()
+            return redirect('task_detail', pk=task.pk)
     else:
-        form = PostForm(instance=post)
-    return render(request, 'todo/post_edit.html', {'form': form})
+        form = TaskForm(instance=post)
+    return render(request, 'todo/task_edit.html', {'form': form})
