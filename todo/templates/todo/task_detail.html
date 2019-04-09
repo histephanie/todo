@@ -9,6 +9,9 @@
         {% endif %}
         {% if user.is_authenticated %}
             <a class="btn btn-default" href="{% url 'task_edit' pk=task.pk %}"><span class="glyphicon glyphicon-pencil"></span></a>
+            <form method="POST" action="{% url 'task_edit' pk=task.pk %}" class="inline-form">{% csrf_token %}
+                <button type="submit" name="delete" value="1" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span></button>
+            </form>
         {% endif %}
         <h2>{{ task.title }}</h2>
         <p>{{ task.text|linebreaksbr }}</p>

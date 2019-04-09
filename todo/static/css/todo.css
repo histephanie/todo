@@ -51,5 +51,9 @@ h1, h2, h3, h4 {
 }
 
 .task h2 a, .post h2 a:visited {
-    color: #00324;
+    color: #004324;
+}
+
+.inline-form {
+    display: inline-block;
 }

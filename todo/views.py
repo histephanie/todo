@@ -7,7 +7,7 @@ from .forms import TaskForm
 
 # Create your views here.
 def task_list(request):
-    tasks = Task.objects.filter(published_date__lte=timezone.now()).order_by('published_date')
+    tasks = Task.objects.order_by('created_date')
     return render(request, 'todo/task_list.html', {'tasks': tasks})
 
 def task_detail(request, pk):
@@ -15,12 +15,11 @@ def task_detail(request, pk):
     return render(request, 'todo/task_detail.html', {'task' : task})
 
 def task_new(request):
-    if request.method == "TASK":
-        form = TaskForm(request.TASK)
+    if request.method == "POST":
+        form = TaskForm(request.POST)
         if form.is_valid():
             task = form.save(commit=False)
             task.author = request.user
-            task.published_date = timezone.now()
             task.save()
             return redirect('task_detail', pk=task.pk)
     else:
@@ -28,15 +27,22 @@ def task_new(request):
     return render(request, 'todo/task_edit.html', {'form':form})
 
 def task_edit(request, pk):
-    task = get_object_or_404(task, pk=pk)
-    if request.method == "TASK":
-        form = TaskForm(request.TASK, instance=Task)
+    task = get_object_or_404(Task, pk=pk)
+
+    if not task.author == request.user:
+        return "unauthorized" 
+
+    if request.method == "POST":
+        if 'delete' in request.POST:
+            task.delete()
+            return redirect("task_list")
+        
+        form = TaskForm(request.POST, instance=task)
         if form.is_valid():
             task = form.save(commit=False)
             task.author = request.user
-            task.published_date = timezone.now()
             task.save()
             return redirect('task_detail', pk=task.pk)
     else:
-        form = TaskForm(instance=post)
+        form = TaskForm(instance=task)
     return render(request, 'todo/task_edit.html', {'form': form})
